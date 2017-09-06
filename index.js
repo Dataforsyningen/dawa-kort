@@ -54,7 +54,7 @@ exports.viskort = function(id,ticket,options) {
 
  	var skaermkort= danKort('topo_skaermkort', 'dtk_skaermkort', 'default', false).addTo(map)
     , skaermkortdaempet= danKort('topo_skaermkort', 'dtk_skaermkort_daempet', 'default', false)
-    , skaermkortgraa= danKort('topo_skaermkort', 'dtk_skaermkort_graa', 'default', false)
+    //, skaermkortgraa= danKort('topo_skaermkort', 'dtk_skaermkort_graa', 'default', false)
  		, ortofoto= danKort('orto_foraar', 'orto_foraar', 'default', false)
  	//	, quickortofoto= danKort('orto_foraar_temp', 'quickorto_2017_10cm', 'default', false)
  		, historisk1842til1899= danKort('topo20_hoeje_maalebordsblade', 'dtk_hoeje_maalebordsblade', 'default', false)
@@ -72,7 +72,7 @@ exports.viskort = function(id,ticket,options) {
  	 var baselayers = {
     "Skærmkort": skaermkort,
     "Skærmkort - dæmpet": skaermkortdaempet,
-    "Skærmkort - gråt": skaermkortgraa,
+   // "Skærmkort - gråt": skaermkortgraa,
     "Ortofoto": ortofoto,
    // "Quick ortofoto": quickortofoto,
    	"Historisk 1842-1899": historisk1842til1899
