@@ -16,10 +16,8 @@ proj4.defs([
 // ];
 var maxBounds= [
   [58.4744, 17.5575],
-  [53.015, 8.074720]
+  [53.015, 2.47833]
 ];
-
-<BoundingBox SRS="EPSG:4326" maxx="17.5575" maxy="58.4744" minx="2.47833" miny="53.015"/>
 
 exports.maxBounds= maxBounds;
 
