@@ -1,6 +1,6 @@
 {
   "name": "dawa-kort",
-  "version": "0.1.5",
+  "version": "0.1.7",
   "description": "Baggrundskort på Leaflet",
   "main": "index.js",
   "scripts": {
