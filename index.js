@@ -14,12 +14,19 @@ proj4.defs([
 //   [57.751949, 15.193240],
 //   [54.559132, 8.074720]
 // ];
+
 var maxBounds= [
-  [58.0, 16.0],
-  [54.5, 7.9]
+  [58.4744, 17.5575],
+  [53.015, 2.47833]
 ];
 
 exports.maxBounds= maxBounds;
+
+exports.beregnCenter= function() {
+  var x= (maxBounds[0][0]-maxBounds[1][0])/2+maxBounds[1][0]+0.5,
+      y= (maxBounds[0][1]-maxBounds[1][1])/2+maxBounds[1][1];
+  return L.latLng(x,y);
+}
 
 exports.viskort = function(id,ticket,options) {
 	var crs = new L.Proj.CRS('EPSG:25832',
