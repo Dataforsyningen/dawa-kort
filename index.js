@@ -1,6 +1,8 @@
-"use strict"
+"use strict";
 
-var dawautil= require('dawa-util');
+var dawautil= require('dawa-util')
+  , URLSearchParams = require('url-search-params')  
+  , dawaois= require('./dawa-ois-koder.js');
 
 proj4.defs([
   [
@@ -28,7 +30,7 @@ exports.beregnCenter= function() {
   var x= (maxBounds[0][0]-maxBounds[1][0])/2+maxBounds[1][0]+0.5,
       y= (maxBounds[0][1]-maxBounds[1][1])/2+maxBounds[1][1];
   return L.latLng(x,y);
-}
+};
 
 exports.viskort = function(id,ticket,options) {
 	var crs = new L.Proj.CRS('EPSG:25832',
@@ -149,104 +151,110 @@ exports.viskort = function(id,ticket,options) {
 
 exports.etrs89towgs84= function(x,y) {
 	  return proj4('EPSG:25832','EPSG:4326', {x:x, y:y});  
-}
+};
 
 exports.geojsontowgs84= function(geojson) {
   return L.Proj.geoJson(geojson);
-}
+};
 
 
-exports.nærmesteAdgangsadresse= function(e) {
-  fetch(dawautil.danUrl("https://dawa.aws.dk/adgangsadresser/reverse",{x: e.latlng.lng, y: e.latlng.lat, medtagugyldige: true}))
-  .catch(function (error) {
-    alert(error.message);
-  })
-  .then(function(response) {
-    if (response.status >=400 && response.status <= 499) {
-      response.json().then(function (object) {
-        alert(object.type + ': ' + object.title);
-      });
-    }
-    else if (response.status >= 200 && response.status <=299 ){
-      return response.json();
-    }
-  }) 
-  .then( function ( adgangsadresse ) { 
+exports.nærmesteAdgangsadresse= function(getMap) {
+  return function(e) {
+    fetch(dawautil.danUrl("https://dawa.aws.dk/adgangsadresser/reverse",{x: e.latlng.lng, y: e.latlng.lat, medtagugyldige: true}))
+    .catch(function (error) {
+      alert(error.message);
+    })
+    .then(function(response) {
+      if (response.status >=400 && response.status <= 499) {
+        response.json().then(function (object) {
+          alert(object.type + ': ' + object.title);
+        });
+      }
+      else if (response.status >= 200 && response.status <=299 ){
+        return response.json();
+      }
+    }) 
+    .then( function ( adgangsadresse ) { 
 
-    var x= adgangsadresse.adgangspunkt.koordinater[1]
-      , y= adgangsadresse.adgangspunkt.koordinater[0];
-    var marker= L.circleMarker(L.latLng(x, y), {color: 'red', fillColor: 'red', stroke: true, fillOpacity: 1.0, radius: 4, weight: 2, opacity: 1.0}).addTo(map);//defaultpointstyle);
-    var popup= marker.bindPopup(L.popup().setContent("<a target='_blank' href='https://dawa.aws.dk/adgangsadresser?id="+adgangsadresse.id+"'>" + dawautil.formatAdgangsadresse(adgangsadresse) + "</a>"),{autoPan: true});
-    if (adgangsadresse.vejpunkt) {
-      var vx= adgangsadresse.vejpunkt.koordinater[1]
-        , vy= adgangsadresse.vejpunkt.koordinater[0];
-      var vpmarker= L.circleMarker(L.latLng(vx, vy), {color: 'blue', fillColor: 'blue', stroke: true, fillOpacity: 1.0, radius: 4, weight: 2, opacity: 1.0}).addTo(map);//defaultpointstyle);
-      vpmarker.bindPopup(L.popup().setContent("<a target='_blank' href='https://dawa.aws.dk/adgangsadresser?id="+adgangsadresse.id+"'>" + dawautil.formatAdgangsadresse(adgangsadresse) + "</a>"),{autoPan: true});
-    }
+      var x= adgangsadresse.adgangspunkt.koordinater[1]
+        , y= adgangsadresse.adgangspunkt.koordinater[0];
+      var marker= L.circleMarker(L.latLng(x, y), {color: 'red', fillColor: 'red', stroke: true, fillOpacity: 1.0, radius: 4, weight: 2, opacity: 1.0}).addTo(getMap());//defaultpointstyle);
+      var popup= marker.bindPopup(L.popup().setContent("<a target='_blank' href='https://dawa.aws.dk/adgangsadresser?id="+adgangsadresse.id+"'>" + dawautil.formatAdgangsadresse(adgangsadresse) + "</a>"),{autoPan: true});
+      if (adgangsadresse.vejpunkt) {
+        var vx= adgangsadresse.vejpunkt.koordinater[1]
+          , vy= adgangsadresse.vejpunkt.koordinater[0];
+        var vpmarker= L.circleMarker(L.latLng(vx, vy), {color: 'blue', fillColor: 'blue', stroke: true, fillOpacity: 1.0, radius: 4, weight: 2, opacity: 1.0}).addTo(getMap());//defaultpointstyle);
+        vpmarker.bindPopup(L.popup().setContent("<a target='_blank' href='https://dawa.aws.dk/adgangsadresser?id="+adgangsadresse.id+"'>" + dawautil.formatAdgangsadresse(adgangsadresse) + "</a>"),{autoPan: true});
+      }
 
-    map.setView(L.latLng(x, y),12);
-    popup.openPopup();
+      getMap().setView(L.latLng(x, y),12);
+      popup.openPopup();
 
-  });
-}
+    });
+  };
+};
 
+exports.nærmesteBygning= function(getMap) {
+  return function(e) {
+    var params = new URLSearchParams();
+    params.set('format','json');
+    params.set('x', e.latlng.lng);
+    params.set('y', e.latlng.lat);
+    params.set('medtagugyldige', true);
+    var url= '/oisbygninger?'+params.toString();
+    fetch(url)
+    .catch(function (error) {
+      alert(error.message);
+    })
+    .then(function(response) {
+      if (response.status >=400 && response.status <= 499) {
+        response.text().then(function (text) {
+          alert(text);
+        });
+      }
+      else if (response.status >= 200 && response.status <=299 ){
+        return response.json();
+      }
+    }) 
+    .then( function ( bygninger ) {
+      var bygning= bygninger[0];
+      var punkt=  L.latLng(bygning.bygningspunkt.koordinater[1], bygning.bygningspunkt.koordinater[0]);
+      var marker= L.circleMarker(punkt, {color: 'blue', fillColor: 'blue', stroke: true, fillOpacity: 1.0, radius: 4, weight: 2, opacity: 1.0}).addTo(getMap());//defaultpointstyle);
+      var popup= marker.bindPopup(L.popup().setContent("<a target='_blank' href='" + url + "'>" + dawaois.anvendelseskoder[bygning.BYG_ANVEND_KODE] + " fra " + bygning.OPFOERELSE_AAR + "</a>"),{autoPan: true});
+      
+      getMap().setView(punkt,12);
+      popup.openPopup();
+    //  map.fitBounds(geojsonlayer.getBounds());
+    });
+  };
+};
 
-exports.nærmesteBygning= function(e) {
-  var params = new URLSearchParams();
-  params.set('format','json');
-  params.set('x', e.latlng.lng);
-  params.set('y', e.latlng.lat);
-  params.set('medtagugyldige', true);
-  var url= '/oisbygninger?'+params.toString();
-  fetch(url)
-  .catch(function (error) {
-    alert(error.message);
-  })
-  .then(function(response) {
-    if (response.status >=400 && response.status <= 499) {
-      response.text().then(function (text) {
-        alert(text);
-      });
-    }
-    else if (response.status >= 200 && response.status <=299 ){
-      return response.json();
-    }
-  }) 
-  .then( function ( bygninger ) {
-    var bygning= bygninger[0];
-    var punkt=  L.latLng(bygning.bygningspunkt.koordinater[1], bygning.bygningspunkt.koordinater[0]);
-    var marker= L.circleMarker(punkt, {color: 'blue', fillColor: 'blue', stroke: true, fillOpacity: 1.0, radius: 4, weight: 2, opacity: 1.0}).addTo(map);//defaultpointstyle);
-    var popup= marker.bindPopup(L.popup().setContent("<a target='_blank' href='" + url + "'>" + dawaois.anvendelseskoder[bygning.BYG_ANVEND_KODE] + " fra " + bygning.OPFOERELSE_AAR + "</a>"),{autoPan: true});
-    
-    map.setView(punkt,12);
-    popup.openPopup();
-  //  map.fitBounds(geojsonlayer.getBounds());
-  });
-}
+exports.nærmesteVejstykke= function(getMap) {
+  return function(e) {
+    fetch(dawautil.danUrl("https://dawa.aws.dk/vejstykker/reverse",{format: 'geojson', x: e.latlng.lng, y: e.latlng.lat}))
+    .catch(function (error) {
+      alert(error.message);
+    })
+    .then(function(response) {
+      if (response.status >=400 && response.status <= 499) {
+        response.json().then(function (object) {
+          alert(object.type + ': ' + object.title);
+        });
+      }
+      else if (response.status >= 200 && response.status <=299 ){
+        return response.json();
+      }
+    }) 
+    .then( function ( vejstykke ) { 
+      var layer= L.geoJSON(vejstykke).addTo(getMap());
+      var popup= layer.bindPopup("<a target='_blank' href='https://dawa.aws.dk/vejstykker?kode="+vejstykke.properties.kode+"&kommunekode="+vejstykke.properties.kommunekode+"'>" + vejstykke.properties.navn + " (" + vejstykke.properties.kode + ")" + "</a>");
+      popup.openPopup();
+    });
+  };
+};
 
-exports.nærmesteVejstykke= function(e) {
-  fetch(dawautil.danUrl("https://dawa.aws.dk/vejstykker/reverse",{format: 'geojson', x: e.latlng.lng, y: e.latlng.lat}))
-  .catch(function (error) {
-    alert(error.message);
-  })
-  .then(function(response) {
-    if (response.status >=400 && response.status <= 499) {
-      response.json().then(function (object) {
-        alert(object.type + ': ' + object.title);
-      });
-    }
-    else if (response.status >= 200 && response.status <=299 ){
-      return response.json();
-    }
-  }) 
-  .then( function ( vejstykke ) { 
-    var layer= L.geoJSON(vejstykke).addTo(map);
-    var popup= layer.bindPopup("<a target='_blank' href='https://dawa.aws.dk/vejstykker?kode="+vejstykke.properties.kode+"&kommunekode="+vejstykke.properties.kommunekode+"'>" + vejstykke.properties.navn + " (" + vejstykke.properties.kode + ")" + "</a>");
-    popup.openPopup();
-  });
-}
-
-exports.hvor= function(e) {
+exports.hvor= function(getMap) {
+  return function(e) {
     var antal= 0;
     var promises= [];
 
@@ -327,33 +335,35 @@ exports.hvor= function(e) {
       var popup = L.popup()
       .setLatLng(punkt)
       .setContent(tekst)
-      .openOn(map);
+      .openOn(getMap());
     });
-  }
+  };
+};
 
-  function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  }
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
-  function formatpostnummer(data) {
-    return "<li>Postnummer: <a target='_blank' href='https://dawa.aws.dk/postnumre/"+data.nr+"'>" +  data.nr + " " + data.navn + "</a></li>";
-  }
-  function formatstorkreds(data) {
-    return "<li>Storkreds: <a target='_blank' href='https://dawa.aws.dk/storkredse/"+data.nummer+"'>" + data.navn + " (" + data.nummer + ")" + "</a></li>";
-  }
+function formatpostnummer(data) {
+  return "<li>Postnummer: <a target='_blank' href='https://dawa.aws.dk/postnumre/"+data.nr+"'>" +  data.nr + " " + data.navn + "</a></li>";
+}
 
-  function formatjordstykke(data) {
-    return "<li>Jordstykke: <a target='_blank' href='https://dawa.aws.dk/jordstykker/"+data.ejerlav.kode+"/"+data.matrikelnr+"'>" + (data.ejerlav.navn?data.ejerlav.navn+" ":"") + data.ejerlav.kode + " " +data.matrikelnr + "</a></li>";
-  }
+function formatstorkreds(data) {
+  return "<li>Storkreds: <a target='_blank' href='https://dawa.aws.dk/storkredse/"+data.nummer+"'>" + data.navn + " (" + data.nummer + ")" + "</a></li>";
+}
 
-  function formatstednavne(data) {
-    let tekst= '';
-    for (var i= 0; i<data.length;i++) {
-      tekst= tekst + "<li>" + capitalizeFirstLetter(data[i].undertype)+": <a target='_blank' href='https://dawa.aws.dk/stednavne/"+data[i].id+"'>" + data[i].navn + "</a></li>";
-    }
-    return tekst;
-  }
+function formatjordstykke(data) {
+  return "<li>Jordstykke: <a target='_blank' href='https://dawa.aws.dk/jordstykker/"+data.ejerlav.kode+"/"+data.matrikelnr+"'>" + (data.ejerlav.navn?data.ejerlav.navn+" ":"") + data.ejerlav.kode + " " +data.matrikelnr + "</a></li>";
+}
 
-  function formatdata(titel,id) {
-    return function (data) { return "<li>" + titel + ": <a target='_blank' href='https://dawa.aws.dk/"+id+"/"+data.kode+"'>" + data.navn + " (" + data.kode + ")" + "</a></li>"};
+function formatstednavne(data) {
+  let tekst= '';
+  for (var i= 0; i<data.length;i++) {
+    tekst= tekst + "<li>" + capitalizeFirstLetter(data[i].undertype)+": <a target='_blank' href='https://dawa.aws.dk/stednavne/"+data[i].id+"'>" + data[i].navn + "</a></li>";
   }
+  return tekst;
+}
+
+function formatdata(titel,id) {
+  return function (data) { return "<li>" + titel + ": <a target='_blank' href='https://dawa.aws.dk/"+id+"/"+data.kode+"'>" + data.navn + " (" + data.kode + ")" + "</a></li>";};
+}

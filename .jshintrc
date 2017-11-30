@@ -1,0 +1,12 @@
+{
+    "globals": {
+        "$": false,
+        "require": false,
+        "proj4": false,
+        "L":false,
+        "exports": false,
+        "fetch": false,
+        "alert": false,
+        "Promise": false
+    }
+}
