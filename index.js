@@ -67,7 +67,7 @@ exports.viskort = function(id,ticket,options) {
  		);
 	}
 
- 	var skaermkort= danKort('topo_skaermkort', 'dtk_skaermkort', 'default', false).addTo(map)
+ 	var skaermkort= danKort('topo_skaermkort', 'dtk_skaermkort', 'default', false)
     , skaermkortdaempet= danKort('topo_skaermkort', 'dtk_skaermkort_daempet', 'default', false)
     //, skaermkortgraa= danKort('topo_skaermkort', 'dtk_skaermkort_graa', 'default', false)
  		, ortofoto= danKort('orto_foraar', 'orto_foraar', 'default', false)
@@ -113,6 +113,13 @@ exports.viskort = function(id,ticket,options) {
     "Vejpunkter": vejpunktkort,
     "Vejpunktlinjer": vejpunktlinjekort
   };
+
+
+  if (typeof options.baselayer === 'undefined') {
+    options.baselayer= "Skærmkort";
+  }
+  baselayers[options.baselayer].addTo(map);
+
 
   L.control.layers(baselayers, overlays, {position: 'bottomleft'}).addTo(map);
   //L.control.search().addTo(map);
