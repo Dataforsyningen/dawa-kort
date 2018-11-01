@@ -72,7 +72,8 @@ exports.viskort = function(id,ticket,options) {
     //, skaermkortgraa= danKort('topo_skaermkort', 'dtk_skaermkort_graa', 'default', false)
  		, ortofoto= danKort('orto_foraar', 'orto_foraar', 'default', false)
  	//	, quickortofoto= danKort('orto_foraar_temp', 'quickorto_2017_10cm', 'default', false)
- 		, historisk1842til1899= danKort('topo20_hoeje_maalebordsblade', 'dtk_hoeje_maalebordsblade', 'default', false)
+    , historisk1842til1899= danKort('topo20_hoeje_maalebordsblade', 'dtk_hoeje_maalebordsblade', 'default', false)
+    , historisk1928til1940= danKort('topo20_lave_maalebordsblade', 'dtk_lave_maalebordsblade', 'default', false)
  		, matrikelkort= danKort('mat', 'Centroide,MatrikelSkel,OptagetVej','sorte_centroider,sorte_skel,default','true')
  		, postnrkort= danKort('dagi', 'postdistrikt', 'default','true')
  		, kommunekort= danKort('dagi', 'kommune', 'default','true');
@@ -102,7 +103,8 @@ exports.viskort = function(id,ticket,options) {
    // "Skærmkort - gråt": skaermkortgraa,
     "Ortofoto": ortofoto,
    // "Quick ortofoto": quickortofoto,
-   	"Historisk 1842-1899": historisk1842til1899
+    "Historisk 1842-1899": historisk1842til1899,
+    "Historisk 1928-1940": historisk1928til1940
   };
 
   var overlays = {
@@ -127,7 +129,8 @@ exports.viskort = function(id,ticket,options) {
   map.on('baselayerchange', function (e) {
     if (e.name === 'Skærmkort' ||
     		e.name === "Skærmkort - dæmpet" ||
-    		e.name === "Historisk 1842-1899") {
+        e.name === "Historisk 1842-1899"||
+        e.name === "Historisk 1928-1940") {
         matrikelkort.setParams({
             styles: 'sorte_centroider,sorte_skel,default'
         });
@@ -255,6 +258,31 @@ exports.nærmesteVejstykke= function(getMap) {
     .then( function ( vejstykke ) { 
       var layer= L.geoJSON(vejstykke).addTo(getMap());
       var popup= layer.bindPopup("<a target='_blank' href='https://dawa.aws.dk/vejstykker?kode="+vejstykke.properties.kode+"&kommunekode="+vejstykke.properties.kommunekode+"'>" + vejstykke.properties.navn + " (" + vejstykke.properties.kode + ")" + "</a>");
+      popup.openPopup();
+    });
+  };
+};
+
+exports.nærmesteNavngivneVej= function(getMap) {
+  return function(e) {
+    fetch(dawautil.danUrl("https://dawa.aws.dk/navngivneveje",{format: 'geojson', geometri: 'begge', x: e.latlng.lng, y: e.latlng.lat}))
+    .catch(function (error) {
+      alert(error.message);
+    })
+    .then(function(response) {
+      if (response.status >=400 && response.status <= 499) {
+        response.json().then(function (object) {
+          alert(object.type + ': ' + object.title);
+        });
+      }
+      else if (response.status >= 200 && response.status <=299 ){
+        return response.json();
+      }
+    }) 
+    .then( function ( navngivenveje ) {       
+      var navngivenvej= navngivenveje.features[0];
+      var layer= L.geoJSON(navngivenvej).addTo(getMap());
+      var popup= layer.bindPopup("<a target='_blank' href='https://dawa.aws.dk/navngivneveje?id="+navngivenvej.properties.id+"'>" + navngivenvej.properties.navn + "</a>");
       popup.openPopup();
     });
   };
