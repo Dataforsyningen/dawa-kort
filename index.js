@@ -349,6 +349,11 @@ exports.hvor= function(getMap) {
     promises[antal].format= formatdata("Politikreds", 'politikredse');
     antal++;
 
+    // afstemningsområde
+    promises.push(fetch(dawautil.danUrl("https://dawa.aws.dk/afstemningsomraader/reverse",{x: e.latlng.lng, y: e.latlng.lat})));
+    promises[antal].format= formatafstemningsområde;
+    antal++;
+
     // opstillingskreds
     promises.push(fetch(dawautil.danUrl("https://dawa.aws.dk/opstillingskredse/reverse",{x: e.latlng.lng, y: e.latlng.lat})));
     promises[antal].format= formatdata("Opstillingskreds", 'opstillingskredse');
@@ -357,6 +362,11 @@ exports.hvor= function(getMap) {
     // storkreds
     promises.push(fetch(dawautil.danUrl("https://dawa.aws.dk/storkredse/reverse",{x: e.latlng.lng, y: e.latlng.lat})));
     promises[antal].format= formatstorkreds;
+    antal++;
+
+    // valglandsdel
+    promises.push(fetch(dawautil.danUrl("https://dawa.aws.dk/valglandsdele/reverse",{x: e.latlng.lng, y: e.latlng.lat})));
+    promises[antal].format= formatvalglandsdel;
     antal++;
 
     // stednavne
@@ -404,8 +414,16 @@ function formatpostnummer(data) {
   return "<li>Postnummer: <a href='https://info.aws.dk/postnumre/"+data.nr+"'>" +  data.nr + " " + data.navn + "</a></li>";
 }
 
+function formatafstemningsområde(data) {
+  return "<li>Afstemningsområde: <a href='https://info.aws.dk/afstemningsomraader/"+data.kommune.kode+"/"+data.nummer+"'>" + data.navn + " (" +data.nummer + ")" + "</a></li>";
+}
+
 function formatstorkreds(data) {
   return "<li>Storkreds: <a href='https://info.aws.dk/storkredse/"+data.nummer+"'>" + data.navn + " (" + data.nummer + ")" + "</a></li>";
+}
+
+function formatvalglandsdel(data) {
+  return "<li>Valglandsdel: <a href='https://info.aws.dk/valglandsdele/"+data.bogstav+"'>" + data.navn + " (" + data.bogstav + ")" + "</a></li>";
 }
 
 function formatjordstykke(data) {
