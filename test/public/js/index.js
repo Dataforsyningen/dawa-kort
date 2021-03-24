@@ -39,15 +39,13 @@ var options= {
   ]
 };
 
-function main() { 
-  fetch('/getticket').then(function (response) {
-    response.text().then(function (ticket) {      
-      map= kort.viskort('map', ticket, options);
-      dawalautocomplete.search().addTo(map);
-      var center= kort.beregnCenter();
-      map.setView(center,2);
-    });
-  });  
+var token = 'd902ac31b1c3ff2d3e7f6aa7073c6c67';
+
+function main() {
+  map= kort.viskort('map', token, options);
+  dawalautocomplete.search().addTo(map);
+  var center= kort.beregnCenter();
+  map.setView(center,2);
 }
 
 main();
