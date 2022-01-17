@@ -14,11 +14,6 @@ proj4.defs([
   ]
 ]);
 
-// var maxBounds= [
-//   [57.751949, 15.193240],
-//   [54.559132, 8.074720]
-// ];
-
 var maxBounds= [
   [58.4744, 17.5575],
   [53.015, 2.47833]
@@ -147,7 +142,6 @@ exports.viskort = function(id,token,options) {
 
 
   L.control.layers(baselayers, overlays, {position: 'bottomleft'}).addTo(map);
-  //L.control.search().addTo(map);
 
   map.on('baselayerchange', function (e) {
     if (e.name === 'Skærmkort' ||
@@ -177,7 +171,6 @@ exports.viskort = function(id,token,options) {
   });
 
 	map.fitBounds(maxBounds);
-  //map.panTo(new L.LatLng(40.737, -73.923));
 
 	return map;
 };
