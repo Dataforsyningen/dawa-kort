@@ -1,7 +1,7 @@
 "use strict";
 
-var dawautil= require('dawa-util')
-  , URLSearchParams = require('url-search-params')  
+var dawautil= require('@dawadk/dawa-util')
+  , URLSearchParams = require('@ungap/url-search-params')  
   , dawaois= require('./dawa-ois-koder.js');
 
 proj4.defs([
