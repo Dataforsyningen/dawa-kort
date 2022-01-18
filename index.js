@@ -87,15 +87,15 @@ exports.viskort = function(id,token,options) {
     }
 
     var skaermkort = danKort('topo_skaermkort', 'dtk_skaermkort', 'default', false),
-        skaermkortdaempet = danKort('topo_skaermkort', 'dtk_skaermkort_daempet', 'default', false),
+        skaermkortdaempet = danKort('topo_skaermkort', 'dtk_skaermkort_daempet', 'default', false);
 
 
-    var matrikelkort = danDAFKort('Matrikel/MatrikelGaeldendeOgForeloebigWMS', 'Centroide_Gaeldende,MatrikelSkel_Gaeldende,OptagetVej_Gaeldende','Sorte_centroider,Sorte_skel,default', 'TRUE');
+    var matrikelkort = danDAFKort('Matrikel/MatrikelGaeldendeOgForeloebigWMS', 'Centroide_Gaeldende,MatrikelSkel_Gaeldende,OptagetVej_Gaeldende','Sorte_centroider,Sorte_skel,default', 'TRUE'),
         postnrkort = danDAFKort('DAGIM/dagi', 'Postnummerinddeling', 'Postnummerinddeling_sort', 'TRUE'),
         kommunekort = danDAFKort('DAGIM/dagi', 'Kommuneinddeling', 'Kommuneinddeling_sort', 'TRUE');
         historisk1842til1899 = danDAFKort('HoejeMaalebordsblade/topo20_hoeje_maalebordsblade', 'dtk_hoeje_maalebordsblade', 'default', 'FALSE'),
         historisk1928til1940 = danDAFKort('LaveMaalebordsblade/topo20_lave_maalebordsblade', 'dtk_lave_maalebordsblade', 'default', 'FALSE'),
-        ortofoto = danDAFKort('GeoDanmarkOrto/orto_foraar', 'orto_foraar', 'default', 'FALSE'),
+        ortofoto = danDAFKort('GeoDanmarkOrto/orto_foraar', 'orto_foraar', 'default', 'FALSE');
 
     var adressekort = L.tileLayer.wms('https://kort.aws.dk/geoserver/aws4_wms/wms', {
         transparent: true,
