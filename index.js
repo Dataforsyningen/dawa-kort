@@ -86,8 +86,8 @@ exports.viskort = function(id,token,options) {
         );
     }
 
-    var skaermkort = danKort('topo_skaermkort', 'dtk_skaermkort', 'default', false),
-        skaermkortdaempet = danKort('topo_skaermkort', 'dtk_skaermkort_daempet', 'default', false);
+    var skaermkort = danKort('topo_skaermkort_DAF', 'dtk_skaermkort', 'default', false),
+        skaermkortdaempet = danKort('topo_skaermkort_DAF', 'dtk_skaermkort_daempet', 'default', false);
 
 
     var matrikelkort = danDAFKort('Matrikel/MatrikelGaeldendeOgForeloebigWMS', 'Centroide_Gaeldende,MatrikelSkel_Gaeldende,OptagetVej_Gaeldende','Sorte_centroider,Sorte_skel,default', 'TRUE'),
