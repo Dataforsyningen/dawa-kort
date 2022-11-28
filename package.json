@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Dataforsyningen/dawa-kort.git"
+    "url": "https://github.com/SDFIdk/dawa-kort.git"
   },
-  "author": "Finn Jordal",
+  "author": "Styrelsen for Dataforsyning og Infrastruktur (SDFI)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Dataforsyningen/dawa-kort/issues"
+    "url": "https://github.com/SDFIdk/dawa-kort/issues"
   },
-  "homepage": "https://github.com/Dataforsyningen/dawa-kort#readme",
+  "homepage": "https://github.com/SDFIdk/dawa-kort#readme",
   "dependencies": {
     "@dawadk/dawa-util": "^0.1.9",
     "npm": "^8.0.0",
