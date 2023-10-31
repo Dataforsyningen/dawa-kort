@@ -10,11 +10,21 @@
     "type": "git",
     "url": "https://github.com/SDFIdk/dawa-kort.git"
   },
-  "author": "Styrelsen for Dataforsyning og Infrastruktur (SDFI)",
+  "author": {
+    "name": "Styrelsen for Dataforsyning og Infrastruktur",
+    "email": "support@sdfi.dk",
+    "url": "https://sdfi.dk/"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/SDFIdk/dawa-kort/issues"
   },
+  "keywords": [
+    "dawa",
+    "kort",
+    "leaflet",
+    "SDFI"
+  ],
   "homepage": "https://github.com/SDFIdk/dawa-kort#readme",
   "dependencies": {
     "@dawadk/dawa-util": "^0.1.9",
