@@ -36,7 +36,7 @@ var dafpass = 'okay75..Spiiritual';
 exports.viskort = function(id,token,options) {
 
     var crs = new L.Proj.CRS('EPSG:25832',
-        '+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs', 
+        '+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs',
         {
             resolutions: [1638.4, 819.2, 409.6, 204.8, 102.4, 51.2, 25.6, 12.8, 6.4, 3.2, 1.6, 0.8, 0.4, 0.2, 0.1]
         }
@@ -53,7 +53,7 @@ exports.viskort = function(id,token,options) {
     var map = new L.Map(id, options);
 
     function danKort(service,layer,styles,transparent) {
-        return L.tileLayer.wms('https://api.dataforsyningen.dk/' + service, 
+        return L.tileLayer.wms('https://api.dataforsyningen.dk/' + service,
             {
                 format: 'image/png',
                 maxZoom: 14,
@@ -69,7 +69,7 @@ exports.viskort = function(id,token,options) {
     }
 
     function danDAFKort(service,layer,styles,transparent) {
-        return L.tileLayer.wms('https://services.datafordeler.dk/' + service + '/1.0.0/WMS', 
+        return L.tileLayer.wms('https://services.datafordeler.dk/' + service + '/1.0.0/WMS',
 
             {
                 format: 'image/png',
@@ -86,8 +86,8 @@ exports.viskort = function(id,token,options) {
         );
     }
 
-    var skaermkort = danKort('topo_skaermkort_DAF', 'dtk_skaermkort', 'default', false),
-        skaermkortdaempet = danKort('topo_skaermkort_DAF', 'dtk_skaermkort_daempet', 'default', false);
+    var skaermkort = danDAFKort('Dkskaermkort/topo_skaermkort', 'dtk_skaermkort', 'default', 'FALSE'),
+        skaermkortdaempet = danDAFKort('Dkskaermkort/topo_skaermkort', 'dtk_skaermkort_daempet', 'default', 'FALSE');
 
 
     var matrikelkort = danDAFKort('Matrikel/MatrikelGaeldendeOgForeloebigWMS', 'Centroide_Gaeldende,MatrikelSkel_Gaeldende,OptagetVej_Gaeldende','Sorte_centroider,Sorte_skel,default', 'TRUE'),
@@ -116,7 +116,7 @@ exports.viskort = function(id,token,options) {
         layers: 'vejpunktlinjer',
         format: 'image/png',
         continuousWorld: true
-        }); 
+        });
 
     var vejnavnelinjer = L.tileLayer.wms('https://kort.aws.dk/geoserver/aws4_wms/wms', {
         transparent: true,
@@ -202,7 +202,7 @@ exports.viskort = function(id,token,options) {
 };
 
 exports.etrs89towgs84= function(x,y) {
-    return proj4('EPSG:25832','EPSG:4326', {x:x, y:y});  
+    return proj4('EPSG:25832','EPSG:4326', {x:x, y:y});
 };
 
 exports.geojsontowgs84= function(geojson) {
@@ -225,8 +225,8 @@ exports.nærmesteAdgangsadresse= function(getMap) {
             else if (response.status >= 200 && response.status <=299 ){
                 return response.json();
             }
-        }) 
-        .then( function ( adgangsadresse ) { 
+        })
+        .then( function ( adgangsadresse ) {
 
           var x= adgangsadresse.adgangspunkt.koordinater[1]
             , y= adgangsadresse.adgangspunkt.koordinater[0];
@@ -267,13 +267,13 @@ exports.nærmesteBygning= function(getMap) {
       else if (response.status >= 200 && response.status <=299 ){
         return response.json();
       }
-    }) 
+    })
     .then( function ( bygninger ) {
       var bygning= bygninger[0];
       var punkt=  L.latLng(bygning.bygningspunkt.koordinater[1], bygning.bygningspunkt.koordinater[0]);
       var marker= L.circleMarker(punkt, {color: 'blue', fillColor: 'blue', stroke: true, fillOpacity: 1.0, radius: 4, weight: 2, opacity: 1.0}).addTo(getMap());//defaultpointstyle);
       var popup= marker.bindPopup(L.popup().setContent("<a href='" + url.replace('dawa','info') + "'>" + dawaois.anvendelseskoder[bygning.BYG_ANVEND_KODE] + " fra " + bygning.OPFOERELSE_AAR + "</a>"),{autoPan: true});
-      
+
       getMap().setView(punkt,12);
       popup.openPopup();
     //  map.fitBounds(geojsonlayer.getBounds());
@@ -296,8 +296,8 @@ exports.nærmesteVejstykke= function(getMap) {
       else if (response.status >= 200 && response.status <=299 ){
         return response.json();
       }
-    }) 
-    .then( function ( vejstykke ) { 
+    })
+    .then( function ( vejstykke ) {
       var layer= L.geoJSON(vejstykke).addTo(getMap());
       var popup= layer.bindPopup("<a href='https://info.dataforsyningen.dk/vejstykker?kode="+vejstykke.properties.kode+"&kommunekode="+vejstykke.properties.kommunekode+"'>" + vejstykke.properties.navn + " (" + vejstykke.properties.kode + ")" + "</a>");
       popup.openPopup();
@@ -320,8 +320,8 @@ exports.nærmesteNavngivneVej= function(getMap) {
       else if (response.status >= 200 && response.status <=299 ){
         return response.json();
       }
-    }) 
-    .then( function ( navngivenveje ) {       
+    })
+    .then( function ( navngivenveje ) {
       var navngivenvej= navngivenveje.features[0];
       var layer= L.geoJSON(navngivenvej).addTo(getMap());
       var popup= layer.bindPopup("<a href='https://info.dataforsyningen.dk/navngivneveje?id="+navngivenvej.properties.id+"'>" + navngivenvej.properties.navn + "</a>");
@@ -395,11 +395,11 @@ exports.hvor= function(getMap) {
     promises[antal].format= formatstednavne;
     antal++;
 
-    Promise.all(promises) 
+    Promise.all(promises)
     .catch(function (error) {
       alert(error.message);
     })
-    .then(function(responses) {      
+    .then(function(responses) {
       for (var i= responses.length-1; i>=0; i--) {
         if (responses[i].ok) {
           responses[i]= responses[i].json();
@@ -416,8 +416,8 @@ exports.hvor= function(getMap) {
       let tekst= '<small><ul>';
       for(let i=0; i<data.length; i++) {
         tekst= tekst + promises[i].format(data[i]);
-      } 
-      tekst= tekst + "</ul></small>";     
+      }
+      tekst= tekst + "</ul></small>";
       var punkt=  e.latlng;
       var popup = L.popup()
       .setLatLng(punkt)
